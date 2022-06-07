@@ -67,6 +67,9 @@ if (LOAD_SLASH) {
     // Ready to open client
     client.on("ready",()=>{
         console.log(`Logged in as ${client.user.tag}`)
+        client.player.addListener("connectionError",(q,err)=>{
+            console.log('Bot Quitted from a voice channel')
+        })
     })
     client.on("interactionCreate",(interaction)=>{
         async function handleCommand(){
@@ -82,7 +85,9 @@ if (LOAD_SLASH) {
             await slashcmd.run({ client, interaction})
         }
         handleCommand();
+
     })
+    
     client.login(TOKEN)
 }
 

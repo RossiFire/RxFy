@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
 const { QueryType } = require("discord-player");
+const { errorEmbedResponse } = require("../utils/ErrorEmbed");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +21,7 @@ module.exports = {
         ),
     run: async ({ client, interaction}) => {
         
-        if(!interaction.member.voice.channel) return interaction.editReply("Devi essere in un canale vocale per usare questo comando")
+        if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare il comando 🤖 /${interaction.commandName} 🤖 `)
         const queue = await client.player.createQueue(interaction.guild)
         if(!queue.connection) await queue.connect(interaction.member.voice.channel)
         let embed = new MessageEmbed()
@@ -33,7 +34,7 @@ module.exports = {
             })  
             if(result.tracks.length === 0){
                 queue.destroy();
-                return interaction.editReply("Nessun risultato");
+                return errorEmbedResponse(interaction,'Nessun risultato trovato')
             } 
             
             const song = result.tracks[0]
@@ -42,28 +43,35 @@ module.exports = {
                 .setDescription(`**[${song.title}](${song.url})** è stata aggiunta alla Queue`)
                 .setThumbnail(song.thumbnail)
                 .setFooter({text: `Duration: ${song.duration}`})
+                .setColor(process.env.palette)
 
         }  else if(interaction.options._subcommand === "playlist"){
-            
             let url =interaction.options.getString("url")
             const result = await client.player.search(url,{
                 requesterBy: interaction.user,
                 searchEngine: QueryType.SPOTIFY_PLAYLIST
             })  
-            if(result.tracks.length === 0) 
-                return interaction.editReply("Nessun risultato");
+            if(result.tracks.length === 0)  return errorEmbedResponse(interaction,'Nessun risultato trovato')
             
             const playlist = result.playlist       
             for(const singleTrack of result.tracks){
                 if(singleTrack){
                     await queue.addTrack(singleTrack);
                 }
-            }     
+            }    
             embed
-                .setDescription(`**${result.tracks.length} canzoni da [${playlist.title}](${playlist.url})** sono state aggiunta alla Queue`)
+                .setDescription(`Sono state caricate 🎶 **${result.tracks.length} canzoni** 🎶\n Dalla Playlist **[${playlist.title}](${playlist.url})** \n\n 🔥 **Buon ascolto** 🔥`)
                 .setThumbnail(playlist.thumbnail)
-
+                .setColor(process.env.palette)
         }
+                //Event to listen for a new Track start
+        client.player.addListener("trackStart",(queue,track)=>{
+            const embed = new MessageEmbed()
+                .setDescription(`🎶 **Ora in riproduzione** 🎶\n\n  [${track.title}](${track.url})`)
+                .setColor(process.env.palette)
+                .setFooter({text: `${track.author} - ${track.duration}`})
+            interaction.channel.send({embeds: [embed]});
+        })
         if(!queue.playing) await queue.play();
         await interaction.editReply({embeds: [embed]});
     }
