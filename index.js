@@ -83,6 +83,13 @@ if (LOAD_SLASH) {
             await interaction.deferReply();
             // Here i call the "run" function written in the slash file we're searching for, because the "slashcmd" is equal to the object
             await slashcmd.run({ client, interaction})
+            client.player.removeAllListeners().addListener("trackStart",(queue,track)=>{
+                const embed = new Discord.MessageEmbed()
+                    .setDescription(`🎶 **Ora in riproduzione** 🎶\n\n  [${track.title}](${track.url})`)
+                    .setColor(process.env.palette)
+                    .setFooter({text: `${track.author} - ${track.duration}`})
+                interaction.channel.send({embeds: [embed]});
+            })
         }
         handleCommand();
 

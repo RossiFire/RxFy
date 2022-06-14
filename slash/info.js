@@ -70,28 +70,30 @@ function createEmbeddedList(interaction, queue){
       .addComponents(new MessageButton().setCustomId("btn_next").setDisabled(false).setEmoji("⏩").setStyle("SECONDARY"))
     // Send message
     const curPage = await interaction.editReply({embeds:[pages[page].setFooter(`Page ${page + 1} / ${pages.length}`)]});
-    const btnPage =  await interaction.channel.send({components: [row]});
-
-    const collectorPaginateQuantity = pages.length < 10 ? 20 : pages.length * 2 
-    
-    // Create collector to handle button click
-    const collector = btnPage.createMessageComponentCollector({
-      max: collectorPaginateQuantity,
-      time: timeout  // Last for 10 minutes
-    })
+    if(pages.length > 1){
+      const btnPage =  await interaction.channel.send({components: [row]});
   
-    collector.on('collect', interaction=>{
-      switch (interaction.customId) {
-        case "btn_prev":
-          page = page > 0 ? --page : pages.length - 1;
-          break;
-          case "btn_next":
-            page = page + 1 < pages.length ? ++page : 0;
-          break;
-        default:
-          break;
-      }
-      curPage.edit({embeds: [pages[page].setFooter(`Page ${page + 1} / ${pages.length}`)]});
-      interaction.deferUpdate();
-    })
+      const collectorPaginateQuantity = pages.length < 10 ? 20 : pages.length * 2 
+      
+      // Create collector to handle button click
+      const collector = btnPage.createMessageComponentCollector({
+        max: collectorPaginateQuantity,
+        time: timeout  // Last for 10 minutes
+      })
+    
+      collector.on('collect', interaction=>{
+        switch (interaction.customId) {
+          case "btn_prev":
+            page = page > 0 ? --page : pages.length - 1;
+            break;
+            case "btn_next":
+              page = page + 1 < pages.length ? ++page : 0;
+            break;
+          default:
+            break;
+        }
+        curPage.edit({embeds: [pages[page].setFooter(`Page ${page + 1} / ${pages.length}`)]});
+        interaction.deferUpdate();
+      })
+    }
   };

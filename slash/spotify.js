@@ -64,14 +64,6 @@ module.exports = {
                 .setThumbnail(playlist.thumbnail)
                 .setColor(process.env.palette)
         }
-                //Event to listen for a new Track start
-        client.player.addListener("trackStart",(queue,track)=>{
-            const embed = new MessageEmbed()
-                .setDescription(`🎶 **Ora in riproduzione** 🎶\n\n  [${track.title}](${track.url})`)
-                .setColor(process.env.palette)
-                .setFooter({text: `${track.author} - ${track.duration}`})
-            interaction.channel.send({embeds: [embed]});
-        })
         if(!queue.playing) await queue.play();
         await interaction.editReply({embeds: [embed]});
     }
