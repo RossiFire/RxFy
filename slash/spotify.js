@@ -8,7 +8,7 @@ dotenv.config()
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("sp")
-        .setDescription("Cerca le canzoni su spotify")
+        .setDescription("Canzoni/Playlist da Spotify")
         .addSubcommand((subcommand)=>
             subcommand
             .setName("canzone")

@@ -8,7 +8,7 @@ dotenv.config()
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("cerca")
-        .setDescription("Cerca una canzone/video da qualsiasi piattaforma (Spotify, Youtube, Soundcloud, Vimeo, ecc...)")
+        .setDescription("Cerca una canzone/video da qualsiasi piattaforma")
         .addStringOption((option)=> option.setName("searchterms").setDescription("Termini di ricerca").setRequired(true)),
     run: async ({ client, interaction}) => {
         

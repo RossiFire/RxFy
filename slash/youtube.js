@@ -6,7 +6,7 @@ const { errorEmbedResponse } = require("../utils/ErrorEmbed");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("yt")
-        .setDescription("Cerca le canzoni su youtube")
+        .setDescription("Canzoni/Playlist da Youtube")
         .addSubcommand((subcommand)=>
             subcommand
             .setName("canzone")
