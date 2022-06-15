@@ -9,11 +9,10 @@ dotenv.config()
 
 const TOKEN = process.env.TOKEN
 const LOAD_SLASH = process.argv[2] == "load"
-//const CLIENT_ID = "982566294337515520"  // Official Bot
-const CLIENT_ID = "983057108448710706"   // Second Version
+const CLIENT_ID = "983057108448710706"
 
-const GUILD_ID = "438291033088851970"   // Discord Nek
-//const GUILD_ID = "970717726165327884"   // Discord Test
+//const GUILD_ID = "438291033088851970"   // Discord Nek
+const GUILD_ID = "970717726165327884"   // Discord Test
 
 
 // Set what bot will use as intents
@@ -25,7 +24,6 @@ const client = new Discord.Client({
         Discord.Intents.FLAGS.GUILD_VOICE_STATES,
     ] 
 });
-/* const client = new Discord.Client({ intents: ["GUILDS", "GUILD_VOICE_STATES"] }); */
 
 client.slashcommands = new Discord.Collection()
 
@@ -33,7 +31,7 @@ client.slashcommands = new Discord.Collection()
 client.player = new Player(client,{
     ytdlOptions:{
         quality: "highestaudio",
-        highWaterMark: 1 << 25
+        highWaterMark: 1 << 25,
     }
 })
 
@@ -67,6 +65,7 @@ if (LOAD_SLASH) {
     // Ready to open client
     client.on("ready",()=>{
         console.log(`Logged in as ${client.user.tag}`)
+        client.user.setPresence({ activities: [{ name: 'te che fallisci', type: 'WATCHING' }], status: 'online',  });
         client.player.addListener("connectionError",(q,err)=>{
             console.log('Bot Quitted from a voice channel')
         })
@@ -86,7 +85,7 @@ if (LOAD_SLASH) {
             client.player.removeAllListeners().addListener("trackStart",(queue,track)=>{
                 const embed = new Discord.MessageEmbed()
                     .setDescription(`🎶 **Ora in riproduzione** 🎶\n\n  [${track.title}](${track.url})`)
-                    .setColor(process.env.palette)
+                    .setColor(process.env.PALETTE)
                     .setFooter({text: `${track.author} - ${track.duration}`})
                 interaction.channel.send({embeds: [embed]});
             })

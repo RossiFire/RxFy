@@ -21,7 +21,7 @@ module.exports = {
         ),
     run: async ({ client, interaction}) => {
         
-        if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare il comando 🤖 /${interaction.commandName} 🤖 `)
+        if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare questo comando`)
         const queue = await client.player.createQueue(interaction.guild)
         if(!queue.connection) await queue.connect(interaction.member.voice.channel)
         let embed = new MessageEmbed()
@@ -40,7 +40,7 @@ module.exports = {
                 .setDescription(`**[${song.title}](${song.url})** è stata aggiunta alla queue`)
                 .setThumbnail(song.thumbnail)
                 .setFooter({text: `Duration: ${song.duration}`})
-                .setColor(process.env.palette)
+                .setColor(process.env.PALETTE)
 
         }  else if(interaction.options._subcommand === "playlist"){
             
@@ -60,7 +60,7 @@ module.exports = {
             embed
             .setDescription(`Sono state caricate 🎶 **${result.tracks.length} canzoni** 🎶\n Dalla Playlist **[${playlist.title}](${playlist.url})** \n\n 🔥 **Buon ascolto** 🔥`)
                 .setThumbnail(playlist.thumbnail)
-                .setColor(process.env.palette)
+                .setColor(process.env.PALETTE)
 
         }
     

@@ -2,6 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
 const { QueryType } = require("discord-player");
 const { errorEmbedResponse } = require("../utils/ErrorEmbed");
+const dotenv = require("dotenv")
+dotenv.config()
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,7 +12,7 @@ module.exports = {
         .addStringOption((option)=> option.setName("searchterms").setDescription("Termini di ricerca").setRequired(true)),
     run: async ({ client, interaction}) => {
         
-        if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare il comando 🤖 /${interaction.commandName} 🤖 `)
+        if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare questo comando`)
         
         const queue = await client.player.createQueue(interaction.guild)
         if(!queue.connection) await queue.connect(interaction.member.voice.channel)
@@ -28,7 +30,7 @@ module.exports = {
             .setDescription(`**[${song.title}](${song.url})** è stata aggiunta alla Queue`)
             .setThumbnail(song.thumbnail)
             .setFooter({text: `Duration: ${song.duration}`})
-            .setColor(process.env.palette)
+            .setColor(process.env.PALETTE)
         
         if(!queue.playing) await queue.play();
         await interaction.editReply({embeds: [embed]});

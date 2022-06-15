@@ -2,6 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders")
 const { Player } = require("discord-player")
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js")
 const { errorEmbedResponse } = require("../utils/ErrorEmbed")
+const dotenv = require("dotenv")
+dotenv.config()
 
 
 module.exports = {
@@ -19,7 +21,7 @@ module.exports = {
                     new MessageEmbed()
                     .setThumbnail(song.thumbnail)
                     .setDescription(`In riproduzione: [${song.title}](${song.url}) - ${song.author} (${song.duration})\n\n` + bar)
-                    .setColor(process.env.palette)
+                    .setColor(process.env.PALETTE)
                 ]
             })
         }
@@ -39,7 +41,7 @@ function createEmbeddedList(interaction, queue){
       const pages = queue.tracks.length / itemPerPage
       for(let i = 0; i < pages; i++){
         const embed = new MessageEmbed()
-            .setColor(process.env.palette)
+            .setColor(process.env.PALETTE)
             .setTimestamp()
             .setTitle("🎶 **Prossime canzoni** 🎶")
             //.setThumbnail();
