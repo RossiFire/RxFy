@@ -7,29 +7,21 @@ dotenv.config()
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("sp")
+        .setName("spotify")
         .setDescription("Canzoni/Playlist da Spotify")
-        .addSubcommand((subcommand)=>
-            subcommand
-            .setName("canzone")
-            .setDescription("Cera una canzone in base all'url")
-            .addStringOption((option)=> option.setName("url").setDescription("Url della canzone/video").setRequired(true))
-        )
-        .addSubcommand((subcommand)=>
-            subcommand
-            .setName("playlist")
-            .setDescription("Cerca una playlist di canzoni")
-            .addStringOption((option)=> option.setName("url").setDescription("Url della playlist").setRequired(true))
-        ),
+        .addStringOption((option)=> option.setName("url").setDescription("Url della canzone/video").setRequired(true)),
     run: async ({ client, interaction}) => {
         
         if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare questo comando `)
         const queue = await client.player.createQueue(interaction.guild)
         if(!queue.connection) await queue.connect(interaction.member.voice.channel)
         let embed = new MessageEmbed()
-        if(interaction.options._subcommand === "canzone"){
 
-            let url =interaction.options.getString("url")
+        let url = interaction.options.getString("url")
+        const isPlaylist = url.includes("/playlist/") || url.includes("/album/")
+
+        if(!isPlaylist){
+
             const result = await client.player.search(url,{
                 requesterBy: interaction.user,
                 searchEngine: QueryType.SPOTIFY_SONG
@@ -47,8 +39,7 @@ module.exports = {
                 .setFooter({text: `Duration: ${song.duration}`})
                 .setColor(process.env.PALETTE)
 
-        }  else if(interaction.options._subcommand === "playlist"){
-            let url =interaction.options.getString("url")
+        }else{
             const result = await client.player.search(url,{
                 requesterBy: interaction.user,
                 searchEngine: QueryType.SPOTIFY_PLAYLIST
@@ -66,6 +57,7 @@ module.exports = {
                 .setThumbnail(playlist.thumbnail)
                 .setColor(process.env.PALETTE)
         }
+        
         if(!queue.playing) await queue.play();
         await interaction.editReply({embeds: [embed]});
     }

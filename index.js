@@ -11,8 +11,6 @@ const TOKEN = process.env.TOKEN
 const LOAD_SLASH = process.argv[2] == "load"
 const CLIENT_ID = "983057108448710706"
 
-
-
 // Set what bot will use as intents
 const client = new Discord.Client({ 
     intents: 
@@ -23,17 +21,10 @@ const client = new Discord.Client({
     ] 
 });
 
-client.slashcommands = new Discord.Collection()
-
 // Set some audio setting for the bot
-client.player = new Player(client,{
-    ytdlOptions:{
-        quality: "highestaudio",
-        highWaterMark: 1 << 25,
-    }
-})
+client.player = new Player(client,{ ytdlOptions:{ quality: "highestaudio", highWaterMark: 1 << 25}})
 
-
+client.slashcommands = new Discord.Collection()
 let commands = []
 // Read files from slash folder
 const slashFiles = fs.readdirSync("./slash").filter(file=> file.endsWith(".js"));
@@ -53,7 +44,6 @@ client.on("ready",()=>{
         console.log('Bot Quitted from a voice channel')
     })
 
-
     if(LOAD_SLASH){
         const rest = new REST({ version : "9"}).setToken(TOKEN)
         console.log("Deploying slash commands")
@@ -68,10 +58,23 @@ client.on("ready",()=>{
         })
     }
 
+    client.player.on('connectionError', (queue, error) => {
+        console.log(`Error emitted from the connection ${error.message} \n`);
+    });
 
-
+    client.player.on('channelEmpty', (queue) => {
+        console.log('Nobody is in the voice channel')
+        queue.destroy();
+    });
+    
+    client.player.on('queueEnd', (queue) => {
+        queue.metadata.send('I finished reading the whole queue ✅');
+    });
 
 })
+
+
+
 client.on("interactionCreate",(interaction)=>{
     async function handleCommand(){
         if (!interaction) return
@@ -84,12 +87,12 @@ client.on("interactionCreate",(interaction)=>{
         await interaction.deferReply();
         // Here i call the "run" function written in the slash file we're searching for, because the "slashcmd" is equal to the object
         await slashcmd.run({ client, interaction})
-        client.player.removeAllListeners().addListener("trackStart",(queue,track)=>{
+/*         client.player.removeAllListeners().addListener("trackStart",(queue,track)=>{
             const embed = new Discord.MessageEmbed()
                 .setDescription(`Ora in riproduzione - [${track.title}](${track.url}) ✅`)
                 .setFooter({text: `${track.author} - ${track.duration}`})
             interaction.channel.send({embeds: [embed]});
-        })
+        }) */
     }
     handleCommand();
 

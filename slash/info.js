@@ -6,11 +6,12 @@ dotenv.config()
 
 
 module.exports = {
-    data: new SlashCommandBuilder().setName("info").setDescription("Mostre le informazioni sulla traccia corrente"),
+    data: new SlashCommandBuilder().setName("queue").setDescription("Mostre le informazioni sulla coda"),
     run: async ({ client, interaction}) =>{
         const queue = client.player.getQueue(interaction.guildId)
         if (!queue) return errorEmbedResponse(interaction,'Non ci sono canzoni nella queue')
-        if(queue.tracks.length > 0){
+        createEmbeddedList(interaction, queue)
+/*         if(queue.tracks.length > 0){
             createEmbeddedList(interaction, queue)
         }else{
             let bar = queue.createProgressBar({ queue: false,  length: 15, timecodes: true })
@@ -23,7 +24,7 @@ module.exports = {
                     .setColor(process.env.PALETTE)
                 ]
             })
-        }
+        } */
     }
 }
 
@@ -37,20 +38,19 @@ const getTruncatedTitle = (text) =>{
 function createEmbeddedList(interaction, queue){
     let itemPerPage = 15
     const embeds = []
-      const pages = queue.tracks.length / itemPerPage
+      let pages = queue.tracks.length / itemPerPage
+      if(pages < 1){ pages = 1}
       for(let i = 0; i < pages; i++){
         const embed = new MessageEmbed()
             .setColor(process.env.PALETTE)
             .setTimestamp()
-            .setTitle("🎶 **Prossime canzoni** 🎶")
-            //.setThumbnail();
+            .setTitle("💎 **Coda Attuale** 💎")
         let rows = ''
         if(i === 0){
           rows = rows + `◽ **[${queue.current.title}](${queue.current.url})** - ${queue.current.author} (${queue.current.duration})\n` 
         }
         for(let j = 0; j< itemPerPage; j++){
           let song = queue.tracks[(j) + (i * itemPerPage)]
-          let index = parseInt((j + 1)) +  ((parseInt(i)) * itemPerPage)
           if(song){
             rows = rows + `[${getTruncatedTitle(song.title)}](${song.url}) - ${song.author} (${song.duration})\n` 
           }
