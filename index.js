@@ -22,7 +22,8 @@ const client = new Discord.Client({
 });
 
 // Set some audio setting for the bot
-client.player = new Player(client,{ ytdlOptions:{ quality: "highestaudio", highWaterMark: 1 << 25}})
+const myPlayer = new Player(client,{ ytdlOptions:{ quality: "highestaudio", highWaterMark: 1 << 25}})
+client.player = myPlayer
 
 client.slashcommands = new Discord.Collection()
 let commands = []
@@ -40,9 +41,6 @@ for (const file of slashFiles){
 client.on("ready",()=>{
     console.log(`Logged in as ${client.user.tag}`)
     client.user.setPresence({ activities: [{ name: 'Te che fallisci', type: 'WATCHING' }], status: 'online',  });
-    client.player.addListener("connectionError",(q,err)=>{
-        console.log('Bot Quitted from a voice channel')
-    })
 
     if(LOAD_SLASH){
         const rest = new REST({ version : "9"}).setToken(TOKEN)
@@ -50,7 +48,6 @@ client.on("ready",()=>{
         client.guilds.cache.forEach((guild)=>{
             const botPermissions = guild.me.permissions.toArray()
             if(!botPermissions.some(permission=> permission === 'USE_APPLICATION_COMMANDS')) return
-
             const route = Routes.applicationGuildCommands(CLIENT_ID, guild.id)
                 rest.put(route, {body: commands})
                 .then(()=>{ console.log("Successfully loaded");})
@@ -58,17 +55,17 @@ client.on("ready",()=>{
         })
     }
 
-    client.player.on('connectionError', (queue, error) => {
-        console.log(`Error emitted from the connection ${error.message} \n`);
+    myPlayer.on('connectionError', (queue, error) => {
+        console.log(error.message);
     });
 
-    client.player.on('channelEmpty', (queue) => {
-        console.log('Nobody is in the voice channel')
+    myPlayer.on('channelEmpty', (queue) => {
+        console.log('Nobody is in the voice channel\n')
         queue.destroy();
     });
     
-    client.player.on('queueEnd', (queue) => {
-        queue.metadata.send('I finished reading the whole queue ✅');
+    myPlayer.on('queueEnd', (queue,) => {
+        console.log('Queue Ended Or Bot disconnected')
     });
 
 })
@@ -87,16 +84,21 @@ client.on("interactionCreate",(interaction)=>{
         await interaction.deferReply();
         // Here i call the "run" function written in the slash file we're searching for, because the "slashcmd" is equal to the object
         await slashcmd.run({ client, interaction})
-/*         client.player.removeAllListeners().addListener("trackStart",(queue,track)=>{
-            const embed = new Discord.MessageEmbed()
+
+        if(myPlayer.listeners('trackStart').length <= 0){
+            myPlayer.addListener("trackStart",(queue,track)=>{
+                const embed = new Discord.MessageEmbed()
                 .setDescription(`Ora in riproduzione - [${track.title}](${track.url}) ✅`)
                 .setFooter({text: `${track.author} - ${track.duration}`})
-            interaction.channel.send({embeds: [embed]});
-        }) */
+                interaction.channel.send({embeds: [embed]});
+            })
+        }
     }
     handleCommand();
 
 })
+
+
     
 client.login(TOKEN)
 
