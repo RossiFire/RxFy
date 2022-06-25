@@ -8,10 +8,11 @@ const { Player } = require("discord-player")
 dotenv.config()
 
 const TOKEN = process.env.TOKEN
+const CLIENT_ID = process.env.CLIENT_ID.toString();
 const LOAD_SLASH = process.argv[2] == "load"
-const CLIENT_ID = "983057108448710706"
+let currentInteraction;
 
-// Set what bot will use as intents
+// Set bot intents
 const client = new Discord.Client({ 
     intents: 
     [
@@ -20,6 +21,7 @@ const client = new Discord.Client({
         Discord.Intents.FLAGS.GUILD_VOICE_STATES,
     ] 
 });
+
 
 // Set some audio setting for the bot
 const myPlayer = new Player(client,{ ytdlOptions:{ quality: "highestaudio", highWaterMark: 1 << 25}})
@@ -50,7 +52,7 @@ client.on("ready",()=>{
             if(!botPermissions.some(permission=> permission === 'USE_APPLICATION_COMMANDS')) return
             const route = Routes.applicationGuildCommands(CLIENT_ID, guild.id)
                 rest.put(route, {body: commands})
-                .then(()=>{ console.log("Successfully loaded");})
+                .then(()=>{ console.log("Successfully loaded"); process.exit(0)})
                 .catch((err)=>{ console.log(err)})
         })
     }
@@ -64,15 +66,23 @@ client.on("ready",()=>{
         queue.destroy();
     });
     
-    myPlayer.on('queueEnd', (queue,) => {
+    myPlayer.on('queueEnd', (queue) => {
         console.log('Queue Ended Or Bot disconnected')
     });
+
+    myPlayer.on("trackStart",(queue,track)=>{
+        const embed = new Discord.MessageEmbed()
+        .setDescription(`Ora in riproduzione - [${track.title}](${track.url}) ✅`)
+        .setFooter({text: `${track.author} - ${track.duration}`})
+        currentInteraction.channel.send({embeds: [embed]});
+    })
 
 })
 
 
 
 client.on("interactionCreate",(interaction)=>{
+
     async function handleCommand(){
         if (!interaction) return
         if (!interaction.isCommand()) return
@@ -80,20 +90,12 @@ client.on("interactionCreate",(interaction)=>{
 
         const slashcmd = client.slashcommands.get(interaction.commandName)
         if (!slashcmd) return interaction.reply("Comando non riconosciuto")
-
+        currentInteraction = interaction
         await interaction.deferReply();
         // Here i call the "run" function written in the slash file we're searching for, because the "slashcmd" is equal to the object
         await slashcmd.run({ client, interaction})
-
-        if(myPlayer.listeners('trackStart').length <= 0){
-            myPlayer.addListener("trackStart",(queue,track)=>{
-                const embed = new Discord.MessageEmbed()
-                .setDescription(`Ora in riproduzione - [${track.title}](${track.url}) ✅`)
-                .setFooter({text: `${track.author} - ${track.duration}`})
-                interaction.channel.send({embeds: [embed]});
-            })
-        }
     }
+
     handleCommand();
 
 })
