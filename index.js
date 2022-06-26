@@ -1,11 +1,9 @@
 const Discord = require("discord.js")
-const dotenv = require("dotenv")
 const { REST } = require("@discordjs/rest")
 const { Routes } = require("discord.js/node_modules/discord-api-types/v9")
 const fs = require("fs")
 const { Player } = require("discord-player")
 
-dotenv.config()
 
 const TOKEN = process.env.TOKEN
 const CLIENT_ID = process.env.CLIENT_ID.toString();

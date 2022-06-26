@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const { errorEmbedResponse } = require("../utils/ErrorEmbed");
-const dotenv = require("dotenv")
-dotenv.config()
 
 module.exports = {
     data: new SlashCommandBuilder() .setName("shuffle").setDescription("Mischia l'ordine delle canzoni nella queue"),

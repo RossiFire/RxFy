@@ -2,8 +2,6 @@ const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
 const { QueryType } = require("discord-player");
 const { errorEmbedResponse } = require("../utils/ErrorEmbed");
-const dotenv = require("dotenv")
-dotenv.config()
 
 module.exports = {
     data: new SlashCommandBuilder()

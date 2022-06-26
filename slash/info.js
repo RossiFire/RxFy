@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js")
 const { errorEmbedResponse } = require("../utils/ErrorEmbed")
-const dotenv = require("dotenv")
-dotenv.config()
 
 
 module.exports = {

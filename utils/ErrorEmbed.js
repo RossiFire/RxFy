@@ -1,6 +1,4 @@
 const { MessageEmbed } = require("discord.js")
-const dotenv = require("dotenv")
-dotenv.config()
 
 function errorEmbedResponse(interaction, text){
     return interaction.editReply({
