@@ -22,7 +22,7 @@ module.exports = {
                 new MessageEmbed()
                 .setAuthor({name: 'RxFy • Help', iconURL: client.user.avatarURL()})
                 .setDescription(description)
-                .setColor(process.env.PALETTE)
+                .setColor(process.env.PALETTE.toString())
             ]
         })
     }

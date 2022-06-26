@@ -4,7 +4,7 @@ dotenv.config()
 
 function errorEmbedResponse(interaction, text){
     return interaction.editReply({
-        embeds: [new MessageEmbed().setDescription(`❗**${text}**❗`).setColor(process.env.PALETTE)]
+        embeds: [new MessageEmbed().setDescription(`❗**${text}**❗`).setColor(process.env.PALETTE.toString())]
     })
 }
 

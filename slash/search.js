@@ -30,7 +30,7 @@ module.exports = {
             .setDescription(`**[${song.title}](${song.url})** è stata aggiunta alla Queue`)
             .setThumbnail(song.thumbnail)
             .setFooter({text: `Duration: ${song.duration}`})
-            .setColor(process.env.PALETTE)
+            .setColor(process.env.PALETTE.toString())
         
         if(!queue.playing) await queue.play();
         await interaction.editReply({embeds: [embed]});

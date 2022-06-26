@@ -12,7 +12,7 @@ module.exports = {
         if (!queue) return await errorEmbedResponse(interaction,'Non ci sono canzoni nella queue')
         queue.shuffle();
         await interaction.editReply({
-            embeds: [new MessageEmbed().setDescription("**L'ordine delle canzoni è stato mischiato**🔁").setColor(process.env.PALETTE)]
+            embeds: [new MessageEmbed().setDescription("**L'ordine delle canzoni è stato mischiato**🔁").setColor(process.env.PALETTE.toString())]
         })
     }
 }

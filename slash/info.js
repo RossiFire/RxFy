@@ -11,20 +11,6 @@ module.exports = {
         const queue = client.player.getQueue(interaction.guildId)
         if (!queue) return errorEmbedResponse(interaction,'Non ci sono canzoni nella queue')
         createEmbeddedList(interaction, queue)
-/*         if(queue.tracks.length > 0){
-            createEmbeddedList(interaction, queue)
-        }else{
-            let bar = queue.createProgressBar({ queue: false,  length: 15, timecodes: true })
-            const song = queue.current;
-            await interaction.editReply({
-                embeds: [
-                    new MessageEmbed()
-                    .setThumbnail(song.thumbnail)
-                    .setDescription(`In riproduzione: [${song.title}](${song.url}) - ${song.author} (${song.duration})\n\n` + bar)
-                    .setColor(process.env.PALETTE)
-                ]
-            })
-        } */
     }
 }
 
@@ -42,7 +28,7 @@ function createEmbeddedList(interaction, queue){
       if(pages < 1){ pages = 1}
       for(let i = 0; i < pages; i++){
         const embed = new MessageEmbed()
-            .setColor(process.env.PALETTE)
+            .setColor(process.env.PALETTE.toString())
             .setTimestamp()
             .setTitle("💎 **Coda Attuale** 💎")
         let rows = ''

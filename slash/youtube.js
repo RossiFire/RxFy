@@ -31,7 +31,7 @@ module.exports = {
             embed
             .setDescription(`Sono state caricate 🎶 **${result.tracks.length} canzoni** 🎶\n Dalla Playlist **[${playlist.title}](${playlist.url})** \n\n 🔥 **Buon ascolto** 🔥`)
                 .setThumbnail(playlist.thumbnail)
-                .setColor(process.env.PALETTE)
+                .setColor(process.env.PALETTE.toString())
         }
         else
         {
@@ -46,7 +46,7 @@ module.exports = {
                     .setDescription(`**[${song.title}](${song.url})** è stata aggiunta alla queue`)
                     .setThumbnail(song.thumbnail)
                     .setFooter({text: `Duration: ${song.duration}`})
-                    .setColor(process.env.PALETTE)
+                    .setColor(process.env.PALETTE.toString())
         }
 
 
