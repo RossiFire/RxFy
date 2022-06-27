@@ -68,7 +68,6 @@ client.on("ready",()=>{
     
     myPlayer.on('queueEnd', (queue) => {
         console.log('Queue Ended Or Bot disconnected')
-        sendIssueReport('Queue End')
     });
 
     myPlayer.on("trackStart",(queue,track)=>{
