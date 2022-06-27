@@ -3,7 +3,7 @@ const { REST } = require("@discordjs/rest")
 const { Routes } = require("discord.js/node_modules/discord-api-types/v9")
 const fs = require("fs")
 const { Player } = require("discord-player")
-
+const { sendIssueReport } = require("./utils/ErrorEmbed")
 
 const TOKEN = process.env.TOKEN
 const CLIENT_ID = process.env.CLIENT_ID.toString();
@@ -57,15 +57,18 @@ client.on("ready",()=>{
 
     myPlayer.on('connectionError', (queue, error) => {
         console.log(error.message);
+        sendIssueReport(error.message)
     });
 
     myPlayer.on('channelEmpty', (queue) => {
         console.log('Nobody is in the voice channel\n')
         queue.destroy();
+        sendIssueReport('Channel Empty')
     });
     
     myPlayer.on('queueEnd', (queue) => {
         console.log('Queue Ended Or Bot disconnected')
+        sendIssueReport('Queue End')
     });
 
     myPlayer.on("trackStart",(queue,track)=>{
@@ -74,7 +77,6 @@ client.on("ready",()=>{
         .setFooter({text: `${track.author} - ${track.duration}`})
         currentInteraction.channel.send({embeds: [embed]});
     })
-
 })
 
 
