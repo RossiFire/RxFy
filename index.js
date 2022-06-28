@@ -57,7 +57,7 @@ client.on("ready",()=>{
 
     myPlayer.on('connectionError', (queue, error) => {
         console.log(error.message);
-        sendIssueReport(error.message)
+        sendIssueReport(error)
     });
 
     myPlayer.on('channelEmpty', (queue) => {
