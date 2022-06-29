@@ -8,6 +8,15 @@ module.exports = {
     run: async ({ client, interaction}) =>{
         const queue = client.player.getQueue(interaction.guildId)
         if (!queue) return errorEmbedResponse(interaction,'Non ci sono canzoni nella queue')
+        const song = queue.current
+        let index = queue.tracks.length
+    
+        if(index > 0){
+          console.log('Canzoni rimanenti dopo questa: ' + index);
+        }else{
+          console.log("è l'ultima canzone della queue");
+        }
+
         createEmbeddedList(interaction, queue)
     }
 }

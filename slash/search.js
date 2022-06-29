@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
 const { QueryType } = require("discord-player");
 const { errorEmbedResponse } = require("../utils/ErrorEmbed");
+const playdl = require("play-dl");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,7 +13,9 @@ module.exports = {
         
         if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare questo comando`)
         
-        const queue = await client.player.createQueue(interaction.guild)
+        const queue = await client.player.createQueue(interaction.guild, { metadata: { channel: interaction.channel},
+            async onBeforeCreateStream(track, source, _queue) { return (await playdl.stream(track.url, { discordPlayerCompatibility : true })).stream;}
+        })
         if(!queue.connection) await queue.connect(interaction.member.voice.channel)
         let embed = new MessageEmbed()
         let url =interaction.options.getString("searchterms")

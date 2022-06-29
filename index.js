@@ -63,7 +63,6 @@ client.on("ready",()=>{
     myPlayer.on('channelEmpty', (queue) => {
         console.log('Nobody is in the voice channel\n')
         queue.destroy();
-        sendIssueReport('Channel Empty')
     });
     
     myPlayer.on('queueEnd', (queue) => {
@@ -76,6 +75,23 @@ client.on("ready",()=>{
         .setFooter({text: `${track.author} - ${track.duration}`})
         currentInteraction.channel.send({embeds: [embed]});
     })
+
+    client.on('voiceStateUpdate', (oldState, newState) => {
+  
+        // Represents a mute/deafen update
+        if(oldState.channelId === newState.chanelId) return console.log('Mute/Deafen Update');
+      
+        // Some connection
+        if(!oldState.channelId && newState.channelId) return console.log('Connection Update');
+      
+        // Disconnection
+        if(oldState.channelId && !newState.channelId){
+            if(newState.id === client.user.id){  
+                const queue = myPlayer.getQueue(oldState.guild.id) 
+                if(queue) queue.destroy()
+            }
+        }
+      });
 })
 
 

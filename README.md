@@ -5,12 +5,13 @@
 Discord Music Bot
 
 # Commands
-* /spotify - Play songs/playlists from spotify
-* /youtube - Play songs/playlists from youtube
-* /cerca - Search a song using keyword 
-* /skip - skip che current track
-* /queue - get some info about the current track playing or the next tracks in the queue
-* /quit - Disconnect the bot from the voice channel
-* /shuffle - shuffle the current queue
-* /help - list of commands and useful links
+* /spotify - Cerca canzoni/playlists da spotify
+* /youtube - Cerca canzoni/playlists da youtube
+* /cerca - Cerca una canzone da qualunque motore di  
+* /skip - Salta la canzone corrente
+* /queue - Informazioni sulla queue corrente
+* /current - Informazioni sulla traccia corrente
+* /quit - Disconnette il bot dal canale vocale
+* /shuffle - Mischia l'ordine delle canzoni nella coda
+* /help - lLista dei comanid
 

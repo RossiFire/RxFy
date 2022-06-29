@@ -8,7 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("youtube")
         .setDescription("Canzoni/Playlist da Youtube")
-        .addStringOption((option)=> option.setName("url").setDescription("Url della playlist").setRequired(true)),
+        .addStringOption((option)=> option.setName("url").setDescription("Url del video/playlist da Youtube").setRequired(true)),
     run: async ({ client, interaction}) => {
         
         if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare questo comando`)
