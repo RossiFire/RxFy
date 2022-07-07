@@ -2,12 +2,13 @@ const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
 const { QueryType } = require("discord-player");
 const { errorEmbedResponse } = require("../utils/ErrorEmbed");
+const playdl = require("play-dl");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("spotify")
         .setDescription("Canzoni/Playlist da Spotify")
-        .addStringOption((option)=> option.setName("url").setDescription("Url della canzone/video").setRequired(true)),
+        .addStringOption((option)=> option.setName("url").setDescription("Url della canzone/playlist").setRequired(true)),
     run: async ({ client, interaction}) => {
         
         if(!interaction.member.voice.channel) return errorEmbedResponse(interaction,`Devi essere in un canale vocale per usare questo comando `)
